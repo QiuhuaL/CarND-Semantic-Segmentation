@@ -1,41 +1,50 @@
 # Semantic Segmentation
-### Introduction
-In this project, you'll label the pixels of a road in images using a Fully Convolutional Network (FCN).
+### Introductionn 
+In this project, we are to label the pixels of a road in images using a Fully Convolutional Network (FCN).
 
 ### Setup
-##### Frameworks and Packages
-Make sure you have the following is installed:
+##### GPU
+The folloqing python packages are used for the project: 
  - [Python 3](https://www.python.org/)
- - [TensorFlow](https://www.tensorflow.org/)
+ - [TensorFlow with GPU](https://www.tensorflow.org/)
  - [NumPy](http://www.numpy.org/)
  - [SciPy](https://www.scipy.org/)
-##### Dataset
-Download the [Kitti Road dataset](http://www.cvlibs.net/datasets/kitti/eval_road.php) from [here](http://www.cvlibs.net/download.php?file=data_road.zip).  Extract the dataset in the `data` folder.  This will create the folder `data_road` with all the training a test images.
 
-### Start
-##### Implement
-Implement the code in the `main.py` module indicated by the "TODO" comments.
-The comments indicated with "OPTIONAL" tag are not required to complete.
-##### Run
-Run the following command to run the project:
+##### Dataset
+The Kitti Road dataset (http://www.cvlibs.net/datasets/kitti/eval_road.php) was downloaded from [here](http://www.cvlibs.net/download.php?file=data_road.zip).  Extract the dataset in the `data` folder.  This will create the folder `data_road` with all the training a test images.
+
+#### Architecture
+The Fully Convolutional Network implemented in this project uses the architecture described in [Long et al.](https://people.eecs.berkeley.edu/~jonlong/long_shelhamer_fcn.pdf)  It is based on the pre-trained VGG model, and the fully connected layers was transformed nto fully convolution layers.  It combines coarse, high layer information with fine, low layers information. 
+
+It first fuses the predictions from the convolution layer on top of VGG layer 4 with the predications computed on convolutiona layer on top of layer 7, by adding a 2* sampling layer and summing both predictions together.  The fusion is continued by fusing predictions from pool layer 3 and the results from the first step, and the final upsampling layer made the predictions back to the image.
+
+### Implementation
+The fully convolutional network was built in the code `main.py` . It implements the modules to load the pre-trained vgg model in the function `load_vgg`. The different layers to learn the features of the images were built in the function `layers`. The built network was optimized by minimizing the cross-entropy loss in the function `optimize`, and the network was trained with the function `train_nn`, where the loss of the network was printed while the network is training.     
+
+
+The network was trained using Adam optimizer.  The parameters chosen are:
+ - `epochs = 80`
+ - `batch_size = 4`
+ - `keep_prob = 0.4`
+ - `learning_rate = 0.0001`
+
+To run the project, use the following command from the terminal:
 ```
 python main.py
 ```
-**Note** If running this in Jupyter Notebook system messages, such as those regarding test status, may appear in the terminal rather than the notebook.
 
-### Submission
-1. Ensure you've passed all the unit tests.
-2. Ensure you pass all points on [the rubric](https://review.udacity.com/#!/rubrics/989/view).
-3. Submit the following in a zip file.
- - `helper.py`
- - `main.py`
- - `project_tests.py`
- - Newest inference images from `runs` folder  (**all images from the most recent run**)
- 
-### Using GitHub and Creating Effective READMEs
+### Results
+[//]: # (Image References)
+[image1]: ./images/um_000032.png
+[image2]: ./images/uu_000015.png
+[image3]: ./images/uu_000099.png
+[image4]: ./images/umm_000077.png
 
-If you are unfamiliar with GitHub , Udacity has a brief [GitHub tutorial](http://blog.udacity.com/2015/06/a-beginners-git-github-tutorial.html) to get you started. Udacity also provides a more detailed free [course on git and GitHub](https://www.udacity.com/course/how-to-use-git-and-github--ud775).
+Example sementic segmentation results on the road recognitions are shown below.  It shows that the architecture that combines multi-level resolution layers successfully find the road from the images at the pixel level. 
 
-To learn about REAMDE files and Markdown, Udacity provides a free [course on READMEs](https://www.udacity.com/courses/ud777), as well. 
+![sample][image1]
+![sample][image2]
+![sample][image3]
+![sample][image4]
 
-GitHub also provides a [tutorial](https://guides.github.com/features/mastering-markdown/) about creating Markdown files.
+
